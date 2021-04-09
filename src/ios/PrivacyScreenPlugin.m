@@ -19,6 +19,44 @@ static UIImageView *imageView;
                                                name:UIApplicationWillResignActiveNotification object:nil];
 }
 
+
+- (void)disable:(CDVInvokedUrlCommand *)command
+{
+    CDVPluginResult* pluginResult = nil;
+    NSLog(@"Habilitando observers");
+
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+      selector:@selector(onAppDidBecomeActive:)
+      name:UIApplicationDidBecomeActiveNotification 
+      object:nil];
+
+    [[NSNotificationCenter defaultCenter] addObserver:self 
+      selector:@selector(onAppWillResignActive:)
+      name:UIApplicationWillResignActiveNotification 
+      object:nil];
+
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Habilitado"];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+- (void)enable:(CDVInvokedUrlCommand *)command
+{
+    CDVPluginResult* pluginResult = nil;
+    NSLog(@"Desabilitando observers");
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self
+        name:UIApplicationDidBecomeActiveNotification 
+        object:nil];
+
+    [[NSNotificationCenter defaultCenter] removeObserver:self 
+        name:UIApplicationWillResignActiveNotification 
+        object:nil];
+
+    pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"DESABILITADO!"];
+    [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+}
+
+
 - (void)onAppDidBecomeActive:(UIApplication *)application
 {
   if (imageView == NULL) {
