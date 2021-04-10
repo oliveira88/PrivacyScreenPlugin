@@ -18,10 +18,12 @@ static UIImageView *imageView;
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onAppWillResignActive:)
                                                name:UIApplicationWillResignActiveNotification object:nil];
 
-  [[NSNotificationCenter defaultCenter] addObserver:self
-        selector:@selector(onAppDidTakeScreenshot:)
-        name: UIApplicationUserDidTakeScreenshotNotification
-        object:nil];                                               
+  [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationUserDidTakeScreenshotNotification
+      object:nil
+      queue:mainQueue
+      usingBlock:^(NSNotification *note) {
+          NSLog(@"PRINT CAPTURADO");
+      }];                                             
 }
 
 
@@ -44,17 +46,17 @@ static UIImageView *imageView;
       object:nil];
 
 
-    [center addObserver:self
-      selector:@selector(onAppDidTakeScreenshot:)
-      name: UIApplicationUserDidTakeScreenshotNotification
-      object:nil];
+    // [center addObserver:self
+    //   selector:@selector(onAppDidTakeScreenshot:)
+    //   name: UIApplicationUserDidTakeScreenshotNotification
+    //   object:nil];
 
-    // [center addObserverForName:UIApplicationUserDidTakeScreenshotNotification
-    //   object:nil
-    //   queue:mainQueue
-    //   usingBlock:^(NSNotification *note) {
-    //       NSLog(@"PRINT CAPTURADO");
-    //   }];
+    [center addObserverForName:UIApplicationUserDidTakeScreenshotNotification
+      object:nil
+      queue:mainQueue
+      usingBlock:^(NSNotification *note) {
+          NSLog(@"PRINT CAPTURADO");
+      }];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Habilitado"];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
@@ -72,13 +74,12 @@ static UIImageView *imageView;
     [center removeObserver:self 
         name:UIApplicationWillResignActiveNotification 
         object:nil];
+
+    [center removeObserver:self 
+        name:UIApplicationUserDidTakeScreenshotNotification 
+        object:nil];
         
-    // [center addObserverForName:UIApplicationUserDidTakeScreenshotNotification
-    //   object:nil
-    //   queue:mainQueue
-    //   usingBlock:^(NSNotification *note) {
-    //       NSLog(@"PRINT CAPTURADO");
-    //   }];
+
 
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"DESABILITADO!"];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
