@@ -11,4 +11,9 @@ var PrivacyScreenPlugin = {
   }
 }
 
+cordova.addConstructor(function () {
+  if (!window.plugins) {window.plugins = {};}
+  window.plugins.privacyscreenplugin = PrivacyScreenPlugin;
+  return window.plugins.privacyscreenplugin;
+});
 module.exports = PrivacyScreenPlugin;
