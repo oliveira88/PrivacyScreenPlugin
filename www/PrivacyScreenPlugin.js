@@ -16,4 +16,4 @@ cordova.addConstructor(function () {
   window.plugins.privacyscreenplugin = PrivacyScreenPlugin;
   return window.plugins.privacyscreenplugin;
 });
-module.exports = PrivacyScreenPlugin;
+// module.exports = PrivacyScreenPlugin;
