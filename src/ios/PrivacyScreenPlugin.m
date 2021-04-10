@@ -25,16 +25,31 @@ static UIImageView *imageView;
     CDVPluginResult* pluginResult = nil;
     NSLog(@"Habilitando observers");
 
-    [[NSNotificationCenter defaultCenter] addObserver:self 
+    NSOperationQueue *mainQueue = [NSOperationQueue mainQueue];
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+
+    [center addObserver:self 
       selector:@selector(onAppDidBecomeActive:)
       name:UIApplicationDidBecomeActiveNotification 
       object:nil];
 
-    [[NSNotificationCenter defaultCenter] addObserver:self 
+    [center addObserver:self 
       selector:@selector(onAppWillResignActive:)
       name:UIApplicationWillResignActiveNotification 
       object:nil];
 
+
+    [center addObserver:self
+      selector:@selector(onAppDidTakeScreenshot:)
+      name: UIApplicationUserDidTakeScreenshotNotification
+      object:nil];
+
+    // [center addObserverForName:UIApplicationUserDidTakeScreenshotNotification
+    //   object:nil
+    //   queue:mainQueue
+    //   usingBlock:^(NSNotification *note) {
+    //       NSLog(@"PRINT CAPTURADO");
+    //   }];
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Habilitado"];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
@@ -43,14 +58,22 @@ static UIImageView *imageView;
 {
     CDVPluginResult* pluginResult = nil;
     NSLog(@"Desabilitando observers");
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 
-    [[NSNotificationCenter defaultCenter] removeObserver:self
+    [center removeObserver:self
         name:UIApplicationDidBecomeActiveNotification 
         object:nil];
 
-    [[NSNotificationCenter defaultCenter] removeObserver:self 
+    [center removeObserver:self 
         name:UIApplicationWillResignActiveNotification 
         object:nil];
+        
+    // [center addObserverForName:UIApplicationUserDidTakeScreenshotNotification
+    //   object:nil
+    //   queue:mainQueue
+    //   usingBlock:^(NSNotification *note) {
+    //       NSLog(@"PRINT CAPTURADO");
+    //   }];
 
     pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"DESABILITADO!"];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
@@ -86,6 +109,10 @@ static UIImageView *imageView;
   }
 }
 
+- (void)onAppDidTakeScreenshot:(UIApplication *)application
+{
+  NSLog(@"PRINT CAPTURADO");
+}
 // Code below borrowed from the CDV splashscreen plugin @ https://github.com/apache/cordova-plugin-splashscreen
 // Made some adjustments though, becuase landscape splashscreens are not available for iphone < 6 plus
 - (CDV_iOSDevice) getCurrentDevice
